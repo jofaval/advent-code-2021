@@ -186,6 +186,7 @@ const bingoV2 = input => {
     // Keeps record of all the numbers that have been said
     let selectedNumbers = [];
 
+    // In recognition of Bea, a dear friend, who gave the idea of using Sets to tackle the non-repeating problems
     let winningBoards = new Set([]);
     const randomNumbersLen = randomNumbers.length;
     for (let numberIndex = 0; numberIndex < randomNumbersLen; numberIndex++) {
