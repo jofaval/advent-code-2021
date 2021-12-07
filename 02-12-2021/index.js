@@ -44,6 +44,61 @@ const moveSubmarine = (commands, separator = ' ') => {
     return result;
 }
 
+/**
+ * 
+ * @param {String[]} commands The array of instructions to follow
+ * @param {String} separator The splitter character
+ * 
+ * @returns {Number} The final position
+ */
+const moveSubmarineV2 = (commands, separator = ' ') => {
+    // The x units of the submarine
+    let horizontal = 0;
+    // The depth units of the submarine
+    let depth = 0;
+    // The aim of the submarine
+    let aim = 0;
+
+    const commandsLen = commands.length;
+    for (let commandIndex = 0; commandIndex < commandsLen; commandIndex++) {
+        const command = commands[commandIndex];
+
+        // The details of the command (type and units, in that order)
+        const details = command.split(separator);
+        // The type of instruction
+        const type = details[0];
+        // The number of units, integer, so it must be parsed
+        const units = parseInt(details[1]);
+
+        // console.log('before', { type, units, horizontal, depth, aim });
+
+        // Execute the instruction
+        switch (type) {
+            case 'forward':
+                horizontal += units;
+                depth += (aim * units);
+                break;
+            case 'up':
+                // depth -= units;
+                aim -= units;
+                break;
+            case 'down':
+                // depth += units;
+                aim += units;
+                break;
+        }
+
+        console.log('after ', { type, units, horizontal, depth, aim });
+    }
+
+    // Multiply the final horizontal position by the final depth units
+    const result = horizontal * depth;
+
+    console.log('Final position of', result);
+
+    return result;
+}
+
 const commands = [
     'forward 5',
     'down 5',
@@ -53,4 +108,5 @@ const commands = [
     'forward 2',
 ];
 
-moveSubmarine(commands);
+// moveSubmarine(commands);
+moveSubmarineV2(commands);
