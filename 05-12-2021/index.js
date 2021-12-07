@@ -111,27 +111,183 @@ const avoidVents = linesOfVent => {
     return totalOverlaps;
 };
 
-/* const linesOfVent = `0,9 -> 5,9
-8,0 -> 0,8
-9,4 -> 3,4
-2,2 -> 2,1
-7,0 -> 7,4
-6,4 -> 2,0
-0,9 -> 2,9
-3,4 -> 1,4
-0,0 -> 8,8
-5,5 -> 8,2`; */
-/* const linesOfVent = `1,1 -> 1,3
-9,7 -> 7,7`; */
-const linesOfVent = `0,9 -> 5,9
-8,0 -> 0,8
-9,4 -> 3,4
-2,2 -> 2,1
-7,0 -> 7,4
-6,4 -> 2,0
-0,9 -> 2,9
-3,4 -> 1,4
-0,0 -> 8,8
-5,5 -> 8,2`;
+/**
+ * Generates the range, taking into account diagonals
+ * 
+ * @param {Number[]} data The positions
+ * 
+ * @returns {Number[]} The range
+ */
+const rangeV2 = data => {
+    const [ x1, y1, x2, y2 ] = data;
+    // console.log(x1, y1, x2, y2);
 
-avoidVents(linesOfVent);
+    // If it's the old version, process it as if
+    if (isHorizontalOrVertical(data)) return [ range(x1, x2), range(y1, y2) ];
+
+    let range = [];
+
+    // Compute diagonals, they're the same numbers
+    /* const min = Math.min(x1, y1, x2, y2);
+    const max = Math.max(x1, y1, x2, y2);
+
+    // less or equal than because we're working with indexes
+    for (let positionIndex = min; positionIndex <= max; positionIndex++) {
+        range.push([ positionIndex, positionIndex ])
+    } */
+
+    // Get the max and min of the horizontal axis
+    const maxX = Math.max(x1, x2);
+    const minX = Math.min(x1, x2);
+
+    // horizontal axis
+    if (x1 < x2) {
+        for (let horizontalIndex = x1; horizontalIndex <= x2; horizontalIndex++) {
+            range.push([ horizontalIndex ]);
+        }
+    } else {
+        for (let horizontalIndex = x1; horizontalIndex >= x2; horizontalIndex--) {
+            range.push([ horizontalIndex ]);
+        }
+    }
+
+    // Get the max and min of the vertical axis
+    const maxY = Math.max(y1, y2);
+    const minY = Math.min(y1, y2);
+
+    let counter = 0;
+    // vertical axis
+    if (y1 < y2) {
+        for (let verticalIndex = y1; verticalIndex <= y2; verticalIndex++) {
+            range[counter].push(verticalIndex);
+    
+            counter++;
+        }
+    }
+    else {
+        for (let verticalIndex = y1; verticalIndex >= y2; verticalIndex--) {
+            range[counter].push(verticalIndex);
+    
+            counter++;
+        }
+    }
+
+    // console.log({ x1, x2, y1, y2 }, range);
+
+    return range;
+}
+
+/**
+ * Prepares to be displayed
+ * 
+ * @param {Number[][]} field The array of numbers to reformat
+ * 
+ * @returns {void}
+ */
+const displayField = field => {
+    let rows = range(0, field[0].length - 1);
+    rows.unshift(' ');
+    rows = rows.join(' ')
+
+    field = field.map((val, index) => field.map(row => row[index]).reverse());
+    field = field.map((row, index) => index + ' ' + row.join(' ').split('').reverse().join(''));
+    field = rows + '\n' + field.join('\n');
+
+    console.log('Final field');
+    console.log(field);
+}
+
+/**
+ * Determines the amount of overlapping positions in the lines of vent given
+ * 
+ * @param {String} linesOfVent Lines of vent
+ * 
+ * @returns {Number} The amount of overlapping positions in the lines of vent given
+ */
+const avoidVentsV2 = linesOfVent => {
+    let totalOverlaps = 0;
+
+    const lines = linesOfVent.trim().replaceAll(' -> ', ',').split('\n');
+    // console.log('lines', lines);
+    const positions = lines.map(line => line.split(',').map(number => parseInt(number)))
+    // console.log('positions', positions);
+
+    // Get the max horizontal number
+    const maxHorizontal = Math.max.apply(null, positions.map(row => Math.max(row[0], row[2]))) + 1
+    // Get the max vertical number
+    const maxVertical = Math.max.apply(null, positions.map(row => Math.max(row[1], row[3]))) + 1
+    console.log('The field size is', maxHorizontal, maxVertical);
+
+    // Generate the array
+    let field = EMPTY_FIELD_CHARACTER.repeat(maxHorizontal).split('');
+    field = field.map(row => EMPTY_FIELD_CHARACTER.repeat(maxVertical).split(''));
+    // console.log('field', field);
+
+    // Generate the overlapping
+    positions.map(pos => {
+        if (!isHorizontalOrVertical(pos)) {
+            const ranges = rangeV2(pos);
+
+            const rangeLen = ranges.length
+            // console.log(rangeLen);
+            for (let rangeIndex = 0; rangeIndex < rangeLen; rangeIndex++) {
+                const [ row, col ] = ranges[rangeIndex];
+                // console.log('range', { row, col });
+
+                let result = 1;
+                if (!isNaN(field[row][col])) result = field[row][col] + 1;
+
+                field[row][col] = result;
+            }
+        } else {
+            const rows = range(pos[0], pos[2]);
+            const cols = range(pos[1], pos[3]);
+            
+            // console.log({ pos, rows, cols });
+            
+            const rowsLen = rows.length;
+            const colsLen = cols.length;
+            for (let rowIndex = 0; rowIndex < rowsLen; rowIndex++) {
+                const row = rows[rowIndex];
+                
+                for (let colIndex = 0; colIndex < colsLen; colIndex++) {
+                    const col = cols[colIndex];
+                    
+                    let result = 1;
+                    if (!isNaN(field[row][col])) result = field[row][col] + 1;
+                    
+                    field[row][col] = result;
+                }
+            }
+        }
+    });
+
+    // Displays the field, mostly for debugging
+    // displayField(field);
+
+    // Calculate the overlapping
+    totalOverlaps = field
+        .map(row => row
+            .filter(n => n >= MIN_OVERLAPPING).length)
+        .reduce((total, row) => total + row);
+
+    console.log('Total number of overlappings', totalOverlaps);
+
+    return totalOverlaps;
+};
+
+const linesOfVent = `
+0,9 -> 5,9
+8,0 -> 0,8
+9,4 -> 3,4
+2,2 -> 2,1
+7,0 -> 7,4
+6,4 -> 2,0
+0,9 -> 2,9
+3,4 -> 1,4
+0,0 -> 8,8
+5,5 -> 8,2
+`;
+
+// avoidVents(linesOfVent);
+avoidVentsV2(linesOfVent);
