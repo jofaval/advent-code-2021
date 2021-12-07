@@ -55,17 +55,18 @@ const isBoardWinning = (board, numbers) => {
         if (score >= TARGET_SCORE) return true;
     }
 
+    // The cols were incorrectly checked
     // Then loop through the cols
-    const cols = board.length;
+    const cols = board[0].length;
     for (let colIndex = 0; colIndex < cols; colIndex++) {
-        const col = board[colIndex];
+        // const col = board[][colIndex];
 
         // Reset the score
         score = 0;
 
-        const rows = col.length;
+        const rows = board.length;
         for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
-            const row = col[rowIndex];
+            const row = board[rowIndex][colIndex];
 
             // If the row is a said number, then increase the score
             if (numbers.includes(row)) score++;
@@ -90,6 +91,8 @@ const isBoardWinning = (board, numbers) => {
  */
 const calculateScore = (board, selectedNumbers, lastNumber) => {
     let totalFromUnmarkedNumbers = 0;
+
+    console.log('winnin board', board, { selectedNumbers, lastNumber });
 
     // Loop through all rows and cols
     board.map(row => {
@@ -177,7 +180,8 @@ const input = `7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3
 10 16 15  9 19
 18  8 23 26 20
 22 11 13  6  5
- 2  0 12  3  7`;
+ 2  0 12  3  7
+`;
 
 const result = bingo(input);
 
@@ -191,3 +195,4 @@ const result = bingo(input);
     7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
 ])
 console.log(temp); */
+// hacer que devuelva número de números/pasos para ganar, para detectar el primero, no el que gane, devolver -1 por defecto
