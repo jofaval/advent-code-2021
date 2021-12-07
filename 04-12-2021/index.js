@@ -92,7 +92,7 @@ const isBoardWinning = (board, numbers) => {
 const calculateScore = (board, selectedNumbers, lastNumber) => {
     let totalFromUnmarkedNumbers = 0;
 
-    console.log('winnin board', board, { selectedNumbers, lastNumber });
+    // console.log('winnin board', board, { selectedNumbers, lastNumber });
 
     // Loop through all rows and cols
     board.map(row => {
@@ -162,6 +162,53 @@ const bingo = input => {
     return finalScore;
 }
 
+/**
+ * Plays bingo given an input and determines the score of the winning board
+ * 
+ * @param {String} input The input to parse and understand
+ * 
+ * @returns {Number} Returns the final score of the board that will win
+ */
+const bingoV2 = input => {
+    // Each new line is an input
+    const parsedInput = input.trim().split('\n\n');
+    
+    // The default score will be 0, which is none
+    let finalScore = 0;
+
+    // Random numbers are the first element, but not to break the flow, the get "shifted" out of the array
+    const randomNumbers = parsedInput.shift().split(',').map(number => parseInt(number));
+    // console.log('The random numbers are', randomNumbers);
+
+    const boards = parsedInput.map(parseBoard);
+    // console.log('The boards are', boards);
+
+    // Keeps record of all the numbers that have been said
+    let selectedNumbers = [];
+
+    let winningBoards = new Set([]);
+    const randomNumbersLen = randomNumbers.length;
+    for (let numberIndex = 0; numberIndex < randomNumbersLen; numberIndex++) {
+        const number = randomNumbers[numberIndex];
+        selectedNumbers.push(number);
+
+        // Gets the boards that are winning
+        const lastToWinBoards = boards.filter(board => !winningBoards.has(board) && isBoardWinning(board, selectedNumbers));
+
+        // If the winning boards isn't empty, we have a winner
+        if (lastToWinBoards.length) {
+            finalScore = calculateScore(lastToWinBoards[0], selectedNumbers, number);
+        }
+
+        // After it's computed, the winnin boards will get added to winning boards
+        lastToWinBoards.map(board => winningBoards.add(board));
+    }
+    
+    console.log('The final score of the last winning board will be:', finalScore);
+
+    return finalScore;
+}
+
 const input = `7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
 
 22 13 17 11  0
@@ -183,7 +230,8 @@ const input = `7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3
  2  0 12  3  7
 `;
 
-const result = bingo(input);
+// const result = bingo(input);
+const result = bingoV2(input);
 
 /* const temp = isBoardWinning([
     [ 14, 21, 17, 24,  4, ],
