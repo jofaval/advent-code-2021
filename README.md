@@ -1,6 +1,36 @@
 # Advent of Code 2021 #
 https://adventofcode.com/2021
 
+## Language
+Javascript (executed with node.js)
+
+### Challenges
+- [Challenge 01](./01-12-2021)
+- [Challenge 02](./02-12-2021)
+- [Challenge 03](./03-12-2021)
+- [Challenge 04](./04-12-2021)
+- [Challenge 05](./05-12-2021)
+- [Challenge 06](./06-12-2021)
+- [Challenge 07](./07-12-2021)
+- [Challenge 08](./08-12-2021)
+- [Challenge 09](./09-12-2021)
+- [Challenge 10](./10-12-2021)
+- [Challenge 11](./11-12-2021)
+- [Challenge 12](./12-12-2021)
+- [Challenge 13](./13-12-2021)
+- [Challenge 14](./14-12-2021)
+- [Challenge 15](./15-12-2021)
+- [Challenge 16](./16-12-2021)
+- [Challenge 17](./17-12-2021)
+- [Challenge 18](./18-12-2021)
+- [Challenge 19](./19-12-2021)
+- [Challenge 20](./20-12-2021)
+- [Challenge 21](./21-12-2021)
+- [Challenge 22](./22-12-2021)
+- [Challenge 23](./23-12-2021)
+- [Challenge 24](./24-12-2021)
+- [Challenge 25](./25-12-2021)
+
 Advent of Code is an Advent calendar of small programming puzzles for a variety of skill sets and skill levels that can be solved in any programming language you like. People use them as a speed contest, interview prep, company training, university coursework, practice problems, or to challenge each other.
 
 You don't need a computer science background to participate - just a little programming knowledge and some problem solving skills will get you pretty far. Nor do you need a fancy computer; every problem has a solution that completes in at most 15 seconds on ten-year-old hardware.
